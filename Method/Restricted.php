@@ -9,7 +9,7 @@ final class Restricted extends MethodPage
 	
 	protected function getTemplateName() : string
 	{
-		return 'country_restrictions_page.php';
+		return 'country_restriction_page.php';
 	}
 	
 	public function getMethodTitle() : string

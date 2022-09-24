@@ -32,9 +32,14 @@ final class Module_CountryRestrictions extends GDO_Module
 		$this->enforceRestrictions(GDO_User::current());
 	}
 	
+	public function onLoadLanguage() : void
+	{
+		$this->loadLanguage('lang/country_restrictions');
+	}
+	
 	private function enforceRestrictions(GDO_User $user) : void
 	{
-		if (!$this->isAlwaysAllowed())
+		if ( (!$user->isAdmin()) && (!$this->isAlwaysAllowed()) )
 		{
 			if ($iso = $user->getCountryISO())
 			{
