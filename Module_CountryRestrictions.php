@@ -27,7 +27,7 @@ final class Module_CountryRestrictions extends GDO_Module
 	public function cfgBlacklist() : array { return $this->getConfigValue('country_blacklist'); }
 	public function cfgWhitelist() : array { return $this->getConfigValue('country_whitelist'); }
 	
-	public function onInit() : void
+	public function onModuleInit() : void
 	{
 		$this->enforceRestrictions(GDO_User::current());
 	}
