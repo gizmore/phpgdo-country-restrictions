@@ -2,44 +2,37 @@
 namespace GDO\CountryRestrictions;
 
 use GDO\Core\GDO_Module;
-use GDO\User\GDO_User;
-use GDO\Country\GDT_Country;
 use GDO\Core\GDO_RedirectError;
+use GDO\Country\GDT_Country;
+use GDO\User\GDO_User;
 
 /**
  * Restrict access for certain contries via black and/or whitelist.
- * 
- * @author gizmore
+ *
  * @version 7.0.1
+ * @author gizmore
  */
 final class Module_CountryRestrictions extends GDO_Module
 {
+
 	public int $priority = 20;
-	
-	public function getConfig() : array
+
+	public function getConfig(): array
 	{
 		return [
 			GDT_Country::make('country_blacklist')->multiple(),
 			GDT_Country::make('country_whitelist')->multiple(),
 		];
 	}
-	
-	public function cfgBlacklist() : array { return $this->getConfigValue('country_blacklist'); }
-	public function cfgWhitelist() : array { return $this->getConfigValue('country_whitelist'); }
-	
-	public function onModuleInit() : void
+
+	public function onModuleInit(): void
 	{
 		$this->enforceRestrictions(GDO_User::current());
 	}
-	
-	public function onLoadLanguage() : void
+
+	private function enforceRestrictions(GDO_User $user): void
 	{
-		$this->loadLanguage('lang/country_restrictions');
-	}
-	
-	private function enforceRestrictions(GDO_User $user) : void
-	{
-		if ( (!$user->isAdmin()) && (!$this->isAlwaysAllowed()) )
+		if ((!$user->isAdmin()) && (!$this->isAlwaysAllowed()))
 		{
 			if ($iso = $user->getCountryISO())
 			{
@@ -61,16 +54,25 @@ final class Module_CountryRestrictions extends GDO_Module
 		}
 	}
 
-	private function isAlwaysAllowed() : bool
+	private function isAlwaysAllowed(): bool
 	{
 		global $me;
 		return $me->isAlwaysAllowed();
 	}
-	
-	private function restricted() : void
+
+	public function cfgWhitelist(): array { return $this->getConfigValue('country_whitelist'); }
+
+	private function restricted(): void
 	{
 		$href = $this->href('Restricted');
 		throw new GDO_RedirectError('err_country_restriction', null, $href);
 	}
-	
+
+	public function cfgBlacklist(): array { return $this->getConfigValue('country_blacklist'); }
+
+	public function onLoadLanguage(): void
+	{
+		$this->loadLanguage('lang/country_restrictions');
+	}
+
 }
