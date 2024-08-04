@@ -57,7 +57,11 @@ final class Module_CountryRestrictions extends GDO_Module
 	private function isAlwaysAllowed(): bool
 	{
 		global $me;
-		return $me->isAlwaysAllowed();
+        if ($me)
+        {
+            return $me->isAlwaysAllowed();
+        }
+        return true;
 	}
 
 	public function cfgWhitelist(): array { return $this->getConfigValue('country_whitelist'); }
